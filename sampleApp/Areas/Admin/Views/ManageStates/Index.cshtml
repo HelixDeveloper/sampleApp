@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewBag.PageTitle = "Manage States";
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_adminLayout.cshtml";
+}
+
+<style>
+    .emode {
+    display:none;
+    }
+</style>
+<script>
+    function fillCountry() {
+         $.ajax({
+            url: '@Url.Action("../../api/Admin/CountryAPI/getCountries")',
+            type: 'GET',
+             success: function (list) {
+                 $("#drpCountry").empty();
+                 $("#drpCountry").append("<option value='0'>Select Country</option>");
+                $.each(list, function (i, lst) {
+                    $("#drpCountry").append("<option value='" + lst.countryID + "'>" + lst.countryName + "</option>");
+                });
+            },
+            error: function (err) { alert(err.statusText); }
+        });
+    }
+
+    function reloadStateGrid() {
+        $.ajax({
+            url: '@Url.Action("../../api/Admin/StateAPI/getStates")',
+            type: 'GET',
+            success: function (list) {
+                $.each(list, function (i, lst) {
+                    $("#tblBody").append("<tr><td>" + (i + 1) + "</td><td><span class='rmode' id='spCountry'>" + lst.countryName + "</span><select id='drpCountry' class='emode form-control'></select></td><td><span class='rmode'>" + lst.stateName + "</span><input type='text' class='emode form-control' value='" + lst.stateName + "'/></td><td><input class='emode' type='checkbox'/><span class='rmode btn btn-link'>" + lst.isActive + "</span</td><td><button id='ebtn' class='btn btn-danger'>Edit </button></td></tr>");
+                });
+            },
+            error: function (err) { alert(err.statusText); }
+        });
+    }
+
+    $(document).ready(function () {
+        fillCountry();
+        reloadStateGrid();
+        $("#btnSave").click(function () {
+            var cid = $("#drpCountry").val();
+            var snm = $("#txtSName").val();
+            var isActive = $("#chkActive").is(":checked");
+            //alert(cid);
+            $.ajax({
+                url: '@Url.Action("../../api/Admin/StateAPI/addNewState")',
+                data: { stateName: snm, fkcountryID: cid, isActive: isActive },
+                type: 'POST',
+                success: function (resp) { reloadStateGrid(); },
+                error: function (err) { alert(err.statusText); }
+            });
+
+        });
+
+        $("#tblBody").on("click", "#ebtn", function () {
+            $(this).parent().parent().find(".emode").show();
+            $(this).parent().parent().find(".rmode").hide();
+            var spCountry = $(this).parent().parent().find("#spCountry");
+            var ddl = $(this).parent().parent().find("#drpCountry");
+            $.ajax({
+            url: '@Url.Action("../../api/Admin/CountryAPI/getCountries")',
+            type: 'GET',
+             success: function (list) {
+                 $(ddl).empty();
+                 $(ddl).append("<option value='0'>Select Country</option>");
+                 $.each(list, function (i, lst) {
+                     if (lst.countryName === spCountry.text()) {
+                         $(ddl).append("<option value='" + lst.countryID + "' selected>" + lst.countryName + "</option>");
+                     }
+                     else {
+                         $(ddl).append("<option value='" + lst.countryID + "'>" + lst.countryName + "</option>");
+                     }
+                });
+            },
+            error: function (err) { alert(err.statusText); }
+        });
+        });
+    });
+
+</script>
+
+<div class="row">
+    <div class="col-md-6">
+        <table class="table">
+            <thead></thead>
+            <tbody>
+                <tr>
+                    <td>Country</td>
+                    <td><select id="drpCountry" class="form-control"></select></td>
+                </tr>
+                <tr>
+                    <td>State Name</td>
+                    <td><input type="text" id="txtSName" class="form-control" /></td>
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td><input type="checkbox" id="chkActive" /></td>
+                </tr>
+
+                <tr>
+
+                    <td></td>
+                    <td><button id="btnSave" class="btn btn-primary">Save</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>#ID</td>
+                    <td>Country Name</td>
+                    <td>State Name</td>
+                    <td>Status</td>
+                </tr>
+            </thead>
+            <tbody id="tblBody"></tbody>
+        </table>
+    </div>
+</div>

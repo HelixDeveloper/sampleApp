@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    ViewBag.PageTitle = "Manage Countries";
+    Layout = "~/Areas/Admin/Views/Shared/_adminLayout.cshtml";
+}
+
+<script>
+
+    function reloadCountries() {
+        $.ajax({
+            url: '@Url.Action("../../api/Admin/CountryAPI/getCountries")',
+            type: 'GET',
+            success: function (list) {
+                $.each(list, function (i, lst) {
+                    $("#tblBody").append("<tr><td>" + (i + 1) + "</td><td>" + lst.countryName + "</td><td><span class='btn btn-link'>" + lst.isActive + "</span</td></tr>");
+                });
+            },
+            error: function (err) { alert(err.statusText); }
+        });
+    }
+
+    $(document).ready(function () {
+
+        reloadCountries();
+
+        $("#btnSave").click(function () {
+            $.ajax({
+                url: '@Url.Action("../../api/Admin/CountryAPI/addNewCountry")',
+                data: {countryName:$("#txtCName").val(),isActive:$("#chkActive").is(":checked")},
+                type: 'POST',
+                success: function (resp) { alert(resp); },
+                error: function (err) { alert(err.statusText); }
+            });
+        });
+    });
+</script>
+<div class="row">
+    <div class="col-md-6">
+        <table class="table">
+            <thead></thead>
+            <tbody>
+                <tr>
+                    <td>Country Name</td>
+                    <td><input type="text" id="txtCName" class="form-control"/></td>
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td><input type="checkbox" id="chkActive"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><button id="btnSave" class="btn btn-primary">Save</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>#ID</td>
+                    <td>Country Name</td>
+                    <td>Status</td>
+                </tr>
+            </thead>
+            <tbody id="tblBody"></tbody>
+        </table>
+    </div>
+</div>
