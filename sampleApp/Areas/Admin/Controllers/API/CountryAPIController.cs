@@ -20,16 +20,21 @@ namespace sampleApp.Areas.Admin.Controllers.API
             return c.removeCountry();
         }
 
-        [HttpPut]
-        public bool updateCountry(Country c)
-        {
-            return c.updateCountry();
-        }
+        //[HttpPut]
+        //public bool updateCountry(Country c)
+        //{
+        //    return c.updateCountry();
+        //}
 
         [HttpGet]
         public List<Country> getCountries() {
             Country c = new Country();
             return c.GetCountries();
+        }
+
+        [HttpPut]
+        public bool updateStatus(Country c) {
+            return c.updateStatus();
         }
     }
 }

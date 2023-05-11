@@ -9,19 +9,48 @@ namespace sampleApp.Areas.Admin.Data.Location
     {
     }
 
-    public class Country {
+    public class Country
+    {
         public int countryID { get; set; }
         public string countryName { get; set; }
         public bool isActive { get; set; }
 
 
-        public bool addNewCountry() {
+        public bool updateStatus()
+        {
+            try
+            {
+
+                using (myDB.myappdbEntities db = new myDB.myappdbEntities())
+                {
+                    myDB.countryTbl c = db.countryTbls.SingleOrDefault(asd=>asd.countryID == Country);
+                    if (c != null)
+                    {
+                        c.isActive = !c.isActive;
+                        db.SaveChanges();
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+
+            }
+            catch (Exception err)
+            {
+                return false;
+            }
+        }
+
+        public bool addNewCountry()
+        {
             try
             {
                 using (myDB.myappdbEntities db = new myDB.myappdbEntities())
                 {
-                    db.countryTbls.Add(new myDB.countryTbl() { 
-                        countryName=countryName,
+                    db.countryTbls.Add(new myDB.countryTbl()
+                    {
+                        countryName = countryName,
                         isActive = isActive
                     });
                     db.SaveChanges();
@@ -42,10 +71,12 @@ namespace sampleApp.Areas.Admin.Data.Location
         /// Old data:  N/A
         /// </summary>
         /// <returns></returns>
-        public List<Country> GetCountries() {
+        public List<Country> GetCountries()
+        {
             try
             {
-                using (myDB.myappdbEntities db = new myDB.myappdbEntities()) {
+                using (myDB.myappdbEntities db = new myDB.myappdbEntities())
+                {
                     List<myDB.countryTbl> lst = db.countryTbls.ToList();
 
                     List<Country> lstCountries = new List<Country>();
@@ -76,8 +107,9 @@ namespace sampleApp.Areas.Admin.Data.Location
         {
             try
             {
-                using (myDB.myappdbEntities db = new myDB.myappdbEntities()) {
-                    myDB.countryTbl obj = db.countryTbls.SingleOrDefault(asd=>asd.countryID == countryID);
+                using (myDB.myappdbEntities db = new myDB.myappdbEntities())
+                {
+                    myDB.countryTbl obj = db.countryTbls.SingleOrDefault(asd => asd.countryID == countryID);
                     if (obj != null)
                     {
                         obj.countryName = countryName;
@@ -85,10 +117,11 @@ namespace sampleApp.Areas.Admin.Data.Location
                         db.SaveChanges();
                         return true;
                     }
-                    else {
+                    else
+                    {
                         return false;
                     }
-                } 
+                }
             }
             catch (Exception e)
             {
@@ -137,22 +170,23 @@ namespace sampleApp.Areas.Admin.Data.Location
         public bool isActive { get; set; }
         public string countryName { get; set; }
 
-        public List<State> GetStates() {
+        public List<State> GetStates()
+        {
             try
             {
                 using (myDB.myappdbEntities db = new myDB.myappdbEntities())
                 {
                     var lst = (from s in db.stateTbls
-                                 join c in db.countryTbls 
-                                 on s.fkcountryID equals c.countryID
-                                 select new
-                                 {
-                                     s.stateID,
-                                     s.stateName,
-                                     s.fkcountryID,
-                                     s.isActive,
-                                     c.countryName
-                                 }).ToList();
+                               join c in db.countryTbls
+                               on s.fkcountryID equals c.countryID
+                               select new
+                               {
+                                   s.stateID,
+                                   s.stateName,
+                                   s.fkcountryID,
+                                   s.isActive,
+                                   c.countryName
+                               }).ToList();
 
                     //List < myDB.stateTbl > lst = db.stateTbls.ToList();
                     List<State> lstStates = new List<State>();
@@ -176,10 +210,13 @@ namespace sampleApp.Areas.Admin.Data.Location
             }
         }
 
-        public bool updateState() {
-            using (myDB.myappdbEntities db = new myDB.myappdbEntities()) {
-                myDB.stateTbl st = db.stateTbls.SingleOrDefault(asd=>asd.stateID == stateID);
-                if (st != null) {
+        public bool updateState()
+        {
+            using (myDB.myappdbEntities db = new myDB.myappdbEntities())
+            {
+                myDB.stateTbl st = db.stateTbls.SingleOrDefault(asd => asd.stateID == stateID);
+                if (st != null)
+                {
                     st.stateName = stateName;
                     st.isActive = isActive;
                     st.fkcountryID = fkcountryID;
@@ -205,10 +242,12 @@ namespace sampleApp.Areas.Admin.Data.Location
             }
         }
 
-        public bool addNewState() {
+        public bool addNewState()
+        {
             try
             {
-                using (myDB.myappdbEntities db = new myDB.myappdbEntities()) {
+                using (myDB.myappdbEntities db = new myDB.myappdbEntities())
+                {
                     myDB.stateTbl st = new myDB.stateTbl();
                     st.stateName = stateName;
                     st.fkcountryID = fkcountryID;
