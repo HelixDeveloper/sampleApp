@@ -23,7 +23,7 @@ namespace sampleApp.Areas.Admin.Data.Location
 
                 using (myDB.myappdbEntities db = new myDB.myappdbEntities())
                 {
-                    myDB.countryTbl c = db.countryTbls.SingleOrDefault(asd=>asd.countryID == Country);
+                    myDB.countryTbl c = db.countryTbls.SingleOrDefault(asd=>asd.countryID == countryID);
                     if (c != null)
                     {
                         c.isActive = !c.isActive;

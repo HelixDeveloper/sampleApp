@@ -12,6 +12,7 @@
             url: '@Url.Action("../../api/Admin/CountryAPI/getCountries")',
             type: 'GET',
             success: function (list) {
+                $("#tblBody").empty();
                 $.each(list, function (i, lst) {
                     $("#tblBody").append("<tr><td><input id='hdID' type='hidden' value='"+lst.countryID+"'/>" + (i + 1) + "</td><td>" + lst.countryName + "</td><td><span id='lnkActive' class='btn btn-link'>" + lst.isActive + "</span</td></tr>");
                 });
